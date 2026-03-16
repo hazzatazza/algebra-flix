@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Algebra Premium | Infinite Liquid</title>
+    <title>ALGEBRA-FLIX</title>
     <style>
         :root {
             --bg: #030305;
-            --liquid-bg: rgba(20, 20, 20, 0.45);
+            --liquid-bg: rgba(20, 20, 20, 0.7);
             --accent-purple: #8834ec;
             --accent-green: #20e3b2;
             --text-main: #fff;
@@ -16,10 +16,22 @@
             font-family: 'Inter', -apple-system, sans-serif;
         }
 
-        body { margin: 0; background: var(--bg); color: var(--text-main); overflow-x: hidden; }
+        body { 
+            margin: 0; 
+            background: var(--bg);
+            color: var(--text-main); 
+            overflow-x: hidden; 
+        }
 
-        /* --- PILL NAV --- */
-        .nav-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 95%; max-width: 1100px; }
+        .brand {
+            position: fixed; top: 25px; left: 30px; z-index: 1100;
+            font-size: 26px; font-weight: 900;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-green));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .nav-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 65%; max-width: 950px; }
         .pill-nav {
             background: var(--liquid-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--border);
             border-radius: 50px; display: flex; align-items: center; justify-content: space-between;
@@ -27,52 +39,55 @@
         }
         .nav-links { display: flex; gap: 5px; }
         .nav-item { cursor: pointer; font-weight: 600; font-size: 13px; opacity: 0.6; padding: 10px 18px; border-radius: 20px; transition: 0.3s; color: white; }
-        .nav-item:hover, .nav-item.active { opacity: 1; background: rgba(255,255,255,0.08); color: var(--accent-green); }
-        .nav-item.active { color: var(--accent-purple); border: 1px solid rgba(136, 52, 236, 0.3); }
+        .nav-item.active { opacity: 1; background: rgba(255,255,255,0.1); color: #fff; }
 
-        /* --- LAYOUT --- */
         .main-content { padding: 120px 4% 50px; }
-        .section-title { font-size: 20px; font-weight: 800; margin: 30px 0 15px; }
+        .section-title { font-size: 24px; font-weight: 800; margin: 30px 0 20px; }
 
-        .rail { display: flex; gap: 18px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .rail::-webkit-scrollbar { display: none; }
+        .full-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         
         .card {
-            min-width: 170px; aspect-ratio: 2/3; border-radius: 12px; background-size: cover;
+            aspect-ratio: 2/3; border-radius: 12px; background-size: cover; background-position: center;
             position: relative; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            border: 1px solid rgba(255,255,255,0.03); flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.05); overflow: hidden;
         }
-        .card:hover { transform: scale(1.05); border-color: var(--accent-green); z-index: 10; }
+        .card:hover { transform: scale(1.05); border-color: var(--accent-purple); z-index: 10; }
 
-        /* TITLE ON HOVER (REGULAR TEXT) */
-        .card.can-hover .card-info {
-            position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 15px;
-            border-radius: 12px; opacity: 0; transition: 0.3s;
+        #details-overlay { position: fixed; inset: 0; z-index: 2000; background: #000; display: none; overflow-y: auto; }
+        .details-backdrop { 
+            position: absolute; top: 0; width: 100%; height: 100vh; 
+            background-size: cover; background-position: top center; opacity: 0.5; 
+            mask-image: linear-gradient(to bottom, black 20%, transparent 90%); 
         }
-        .card.can-hover:hover .card-info { opacity: 1; }
-        .card-title { font-size: 14px; font-weight: 500; }
+        .details-content { position: relative; z-index: 2100; padding: 100px 5%; max-width: 1400px; margin: 0 auto; }
+        
+        .meta-tag { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+        .star { color: #ffc107; font-size: 18px; }
 
-        /* --- DETAILS OVERLAY --- */
-        #details-overlay { position: fixed; inset: 0; z-index: 2000; background: var(--bg); display: none; overflow-y: auto; }
-        .details-backdrop { position: fixed; top: 0; width: 100%; height: 80%; background-size: cover; background-position: center; opacity: 0.35; mask-image: linear-gradient(to bottom, black 40%, transparent); }
-        .details-content { position: relative; z-index: 2100; padding: 120px 5%; max-width: 1200px; margin: 0 auto; }
-        .details-grid { display: grid; grid-template-columns: 300px 1fr; gap: 50px; }
-        .details-poster { width: 100%; aspect-ratio: 2/3; border-radius: 15px; border: 1px solid var(--border); background-size: cover; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .pill-tag { background: rgba(255,255,255,0.08); padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-right: 8px; border: 1px solid var(--border); }
+        .play-btn { 
+            background: var(--accent-purple); color: white; border: none; 
+            padding: 15px 40px; border-radius: 40px; font-size: 18px; font-weight: 800; 
+            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s;
+        }
 
-        /* --- PLAYER --- */
+        .ep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 30px; }
+        .ep-card { background: rgba(255,255,255,0.05); border-radius: 15px; overflow: hidden; cursor: pointer; border: 1px solid var(--border); transition: 0.3s; }
+        .ep-card:hover { border-color: var(--accent-purple); background: rgba(255,255,255,0.1); }
+        .ep-thumb { width: 100%; aspect-ratio: 16/9; background-size: cover; background-position: center; }
+        .ep-info { padding: 15px; }
+        .ep-title { font-weight: 700; color: var(--accent-green); margin-bottom: 5px; }
+        .ep-desc { font-size: 13px; opacity: 0.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
         #player-view { position: fixed; inset: 0; background: #000; z-index: 3000; display: none; padding: 20px; }
-        iframe { width: 100%; height: calc(100% - 80px); border: none; border-radius: 15px; background: #000; box-shadow: 0 0 50px rgba(0,0,0,1); }
+        iframe { width: 100%; height: calc(100% - 80px); border: none; border-radius: 15px; }
 
-        .btn { background: var(--liquid-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); color: white; padding: 12px 28px; border-radius: 30px; cursor: pointer; font-weight: 700; transition: 0.2s; }
-        .btn:hover { border-color: var(--accent-purple); background: rgba(255,255,255,0.1); }
-        .btn.primary { background: linear-gradient(45deg, var(--accent-purple), #a362f0); border: none; }
-
-        select { background: #151515; color: white; border: 1px solid var(--accent-green); padding: 12px; border-radius: 12px; outline: none; cursor: pointer; }
+        .btn-back { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; }
+        select { background: #151515; color: white; border: 1px solid var(--border); padding: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
+
+<div class="brand">ALGEBRA-FLIX</div>
 
 <div class="nav-container">
     <div class="pill-nav">
@@ -82,84 +97,61 @@
             <div class="nav-item" id="nav-tv" onclick="setMode('tv')">TV Shows</div>
             <div class="nav-item" id="nav-anime" onclick="setMode('anime')">Anime</div>
         </div>
-        <div style="display:flex; align-items:center; gap:10px;">
-            <input type="text" id="search" placeholder="Search..." style="background:transparent; border:none; color:white; outline:none; width:110px; font-size:14px;">
-            <span style="cursor:pointer">🔍</span>
-        </div>
+        <input type="text" id="search-box" placeholder="Search..." style="background:transparent; border:none; color:white; outline:none; width:150px;">
     </div>
 </div>
 
-<div class="main-content" id="view-browse">
-    <div id="hist-box" style="display:none;"><h2 class="section-title">Continue Watching</h2><div class="rail" id="history-rail"></div></div>
-    <div id="watch-box" style="display:none;"><h2 class="section-title">My Watchlist</h2><div class="rail" id="watchlist-rail"></div></div>
-    
-    <h2 class="section-title">Trending</h2>
-    <div class="rail" id="trending-rail"></div>
-
-    <h2 class="section-title">Recommended</h2>
-    <div class="rail" id="main-grid" style="flex-wrap: wrap; height: auto;"></div>
-</div>
-
-<div class="main-content" id="view-search" style="display:none;">
-    <h2 class="section-title">Search Results</h2>
-    <div class="rail" id="search-grid" style="flex-wrap: wrap; height: auto;"></div>
+<div class="main-content">
+    <div id="history-section" style="display:none; margin-bottom:50px;">
+        <h2 class="section-title">Continue Watching</h2>
+        <div id="history-grid" class="full-grid"></div>
+    </div>
+    <h2 class="section-title" id="grid-header">Trending Now</h2>
+    <div id="main-grid" class="full-grid"></div>
 </div>
 
 <div id="details-overlay">
     <div class="details-backdrop" id="d-backdrop"></div>
     <div class="details-content">
-        <button class="btn" onclick="closeDetails()" style="margin-bottom:20px;">← Back</button>
-        <div class="details-grid">
-            <div class="details-poster" id="d-poster"></div>
-            <div>
-                <h1 id="d-title" style="font-size:54px; margin:0; font-weight:900; letter-spacing:-2px;"></h1>
-                <p id="d-tagline" style="color:var(--accent-green); font-style:italic; font-size:18px; margin:10px 0;"></p>
-                <div style="margin:20px 0; display:flex; align-items:center;">
-                    <span id="d-rating" style="color:#ffcc00; font-weight:bold; font-size:18px;">⭐ 0.0</span>
-                    <span style="margin:0 15px; opacity:0.3;">|</span>
-                    <span id="d-year">0000</span>
-                    <span style="margin:0 15px; opacity:0.3;">|</span>
-                    <span id="d-runtime">0m</span>
+        <button class="btn-back" onclick="closeDetails()">← Back</button>
+        <div style="display:flex; gap:50px; flex-wrap: wrap; align-items: flex-end;">
+            <div id="d-poster" style="width:300px; aspect-ratio:2/3; border-radius:20px; background-size:cover; box-shadow: 0 20px 50px rgba(0,0,0,0.5);"></div>
+            <div style="flex:1; min-width:350px;">
+                <h1 id="d-title" style="font-size:64px; margin:0 0 10px 0; font-weight:900;"></h1>
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+                    <span class="star">★ <span id="d-rating" style="color:white"></span></span>
+                    <span id="d-year" class="meta-tag"></span>
+                    <div id="d-genres" style="display:flex; gap:8px;"></div>
                 </div>
-                <div id="d-genres" style="margin-bottom:25px; display:flex; flex-wrap:wrap; gap:8px;"></div>
-                <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px; border:1px solid var(--border);">
-                    <h4 style="margin-top:0; color:var(--accent-purple); text-transform:uppercase; font-size:12px; letter-spacing:1px;">Overview</h4>
-                    <p id="d-overview" style="line-height:1.6; opacity:0.9; margin:0;"></p>
+                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 30px;">
+                    <h3 style="margin-top:0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-purple);">Overview</h3>
+                    <p id="d-overview" style="font-size:17px; line-height:1.6; opacity:0.8; margin:0;"></p>
                 </div>
-                <div style="margin-top:40px; display:flex; gap:15px;">
-                    <button class="btn primary" id="play-main" style="padding:15px 50px;">▶ Play Now</button>
-                    <button class="btn" id="save-btn">+ Watchlist</button>
-                </div>
+                <button class="play-btn" id="play-main">▶ Play Now</button>
             </div>
         </div>
-        <div id="tv-area" style="display:none; margin-top:50px;">
-            <h2 class="section-title">Seasons & Episodes</h2>
-            <div id="season-list" class="rail" style="margin-bottom:20px;"></div>
-            <div id="ep-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;"></div>
+        <div id="tv-area" style="display:none; margin-top:60px;">
+            <h2 class="section-title">Episodes</h2>
+            <div id="season-tabs" style="display:flex; gap:10px; margin-bottom:25px; overflow-x:auto;"></div>
+            <div id="ep-list" class="ep-grid"></div>
         </div>
     </div>
 </div>
 
 <div id="player-view">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <button class="btn" onclick="closePlayer()">← Exit Player</button>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <span style="font-size:12px; color:var(--accent-green); font-weight:bold;">SERVER:</span>
-            <select id="server-select" onchange="loadPlayer()"></select>
-        </div>
+        <button class="btn-back" style="margin:0" onclick="closePlayer()">← Exit Player</button>
+        <select id="server-select" onchange="loadPlayer()"></select>
     </div>
     <iframe id="player-frame" allowfullscreen></iframe>
 </div>
 
 <script>
     const KEY = "2713804610e1e236b1cf44bfac3a7776";
-    let watchlist = JSON.parse(localStorage.getItem('alg_w')) || [];
-    let history = JSON.parse(localStorage.getItem('alg_h')) || [];
-    let current = null;
-    let mode = 'home';
+    let current = null, mode = 'home';
 
-    // ALL 30+ SOURCES - CORRECTED FORMATS
     const SOURCES = [
+        { name: "VidEasy (4K)", url: "https://player.videasy.net/{t}/{id}{sh_ve}?color=8834ec" },
         { name: "VidFast (4K)", url: "https://vidfast.pro/{t}/{id}{sh}" },
         { name: "VidRock.net", url: "https://vidrock.net/embed/{t}/{id}{sh}" },
         { name: "VidSrc (VSEmbed)", url: "https://vsembed.ru/embed/{t}/{id}/{sh_v}" },
@@ -192,20 +184,19 @@
         { name: "UEmbed", url: "https://uembed.site/?id={id}{sh_ue}" }
     ];
 
-    async function init() {
+    function init() {
         const sel = document.getElementById('server-select');
         SOURCES.forEach((s, i) => {
             let opt = document.createElement('option');
             opt.value = i; opt.innerText = s.name;
             sel.appendChild(opt);
         });
+        updateHistory();
         loadPage();
     }
 
     async function setMode(m) {
         mode = m;
-        document.getElementById('view-browse').style.display = 'block';
-        document.getElementById('view-search').style.display = 'none';
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById(`nav-${m}`).classList.add('active');
         loadPage();
@@ -216,123 +207,126 @@
         if(mode === 'movie') u = `https://api.themoviedb.org/3/movie/popular?api_key=${KEY}`;
         if(mode === 'tv') u = `https://api.themoviedb.org/3/tv/popular?api_key=${KEY}`;
         if(mode === 'anime') u = `https://api.themoviedb.org/3/discover/tv?api_key=${KEY}&with_genres=16&with_keywords=210024|287501`;
-
         const d = await fetch(u).then(r => r.json());
-        renderGrid(d.results, 'trending-rail', false);
-        renderGrid(d.results.reverse(), 'main-grid', true);
-        updateSideRails();
+        renderGrid(d.results, 'main-grid');
     }
 
-    function renderGrid(items, tid, canHover) {
-        const t = document.getElementById(tid); t.innerHTML = '';
+    function renderGrid(items, targetId) {
+        const t = document.getElementById(targetId); t.innerHTML = '';
         items.forEach(item => {
             if(!item.poster_path) return;
-            const c = document.createElement('div');
-            c.className = `card ${canHover ? 'can-hover' : ''}`;
+            const c = document.createElement('div'); c.className = 'card';
             c.style.backgroundImage = `url(https://image.tmdb.org/t/p/w500${item.poster_path})`;
-            if(canHover) c.innerHTML = `<div class="card-info"><div class="card-title">${item.title || item.name}</div></div>`;
             c.onclick = () => openDetails(item);
             t.appendChild(c);
         });
     }
 
     async function openDetails(item) {
-        current = item;
-        const type = (item.name || item.media_type === 'tv') ? 'tv' : 'movie';
+        const type = (item.name || item.first_air_date || item.media_type === 'tv') ? 'tv' : 'movie';
         const data = await fetch(`https://api.themoviedb.org/3/${type}/${item.id}?api_key=${KEY}`).then(r => r.json());
         
         document.getElementById('details-overlay').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
         document.getElementById('d-backdrop').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
         document.getElementById('d-poster').style.backgroundImage = `url(https://image.tmdb.org/t/p/w500${data.poster_path})`;
         document.getElementById('d-title').innerText = data.title || data.name;
-        document.getElementById('d-tagline').innerText = data.tagline ? `"${data.tagline}"` : '';
         document.getElementById('d-overview').innerText = data.overview;
-        document.getElementById('d-rating').innerText = `⭐ ${data.vote_average.toFixed(1)}`;
+        document.getElementById('d-rating').innerText = data.vote_average.toFixed(1);
         document.getElementById('d-year').innerText = (data.release_date || data.first_air_date || '').split('-')[0];
-        document.getElementById('d-runtime').innerText = data.runtime ? `${data.runtime}m` : (data.episode_run_time ? `${data.episode_run_time[0]}m` : '--');
         
-        const gBox = document.getElementById('d-genres'); gBox.innerHTML = '';
-        data.genres.forEach(g => { gBox.innerHTML += `<span class="pill-tag">${g.name}</span>` });
+        const gDiv = document.getElementById('d-genres'); gDiv.innerHTML = '';
+        data.genres.slice(0,3).forEach(g => {
+            gDiv.innerHTML += `<span class="meta-tag">${g.name}</span>`;
+        });
 
-        document.getElementById('play-main').onclick = () => type === 'movie' ? startPlayer(type, data.id) : null;
-        
-        if(type === 'tv') {
-            document.getElementById('tv-area').style.display = 'block';
-            loadTV(data);
-        } else {
+        const pBtn = document.getElementById('play-main');
+        if(type === 'movie') {
+            pBtn.style.display = 'flex';
+            pBtn.onclick = () => startPlayer('movie', data.id, 1, 1, data.title, data.poster_path);
             document.getElementById('tv-area').style.display = 'none';
+        } else {
+            pBtn.style.display = 'none';
+            document.getElementById('tv-area').style.display = 'block';
+            loadSeasons(data);
         }
     }
 
-    async function loadTV(data) {
-        const sList = document.getElementById('season-list'); sList.innerHTML = '';
-        data.seasons.forEach(s => {
-            if(s.season_number === 0) return;
-            const b = document.createElement('button'); b.className = 'pill-tag'; b.style.cursor = 'pointer'; b.innerText = `Season ${s.season_number}`;
-            b.onclick = () => loadEps(data.id, s.season_number);
-            sList.appendChild(b);
+    function loadSeasons(data) {
+        const tabs = document.getElementById('season-tabs'); tabs.innerHTML = '';
+        data.seasons.filter(s => s.season_number > 0).forEach(s => {
+            const b = document.createElement('button'); b.className = 'btn-back'; b.innerText = `Season ${s.season_number}`;
+            b.onclick = () => loadEpisodes(data.id, s.season_number, data.name, data.poster_path);
+            tabs.appendChild(b);
         });
-        loadEps(data.id, 1);
+        loadEpisodes(data.id, 1, data.name, data.poster_path);
     }
 
-    async function loadEps(id, s) {
+    async function loadEpisodes(id, s, title, poster) {
         const d = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${s}?api_key=${KEY}`).then(r => r.json());
-        const eList = document.getElementById('ep-list'); eList.innerHTML = '';
+        const list = document.getElementById('ep-list'); list.innerHTML = '';
         d.episodes.forEach(e => {
-            const div = document.createElement('div'); div.className = 'pill-tag'; div.style.display = 'block'; div.style.margin = '0 0 10px 0'; div.style.cursor = 'pointer';
-            div.innerText = `Episode ${e.episode_number}: ${e.name}`;
-            div.onclick = () => startPlayer('tv', id, s, e.episode_number);
-            eList.appendChild(div);
+            const thumb = e.still_path ? `https://image.tmdb.org/t/p/w500${e.still_path}` : `https://image.tmdb.org/t/p/w500${poster}`;
+            const c = document.createElement('div'); c.className = 'ep-card';
+            c.innerHTML = `
+                <div class="ep-thumb" style="background-image: url(${thumb})"></div>
+                <div class="ep-info">
+                    <div class="ep-title">E${e.episode_number} • ${e.name}</div>
+                    <div class="ep-desc">${e.overview || 'No description available.'}</div>
+                </div>`;
+            c.onclick = () => startPlayer('tv', id, s, e.episode_number, title, poster);
+            list.appendChild(c);
         });
     }
 
-    function startPlayer(t, id, s=1, e=1) {
-        current = { ...current, type: t, id, s, e };
-        document.getElementById('player-view').style.display = 'block';
-        loadPlayer();
-        
+    function startPlayer(t, id, s=1, e=1, title, poster) {
+        current = { t, id, s, e, title, poster };
+        let history = JSON.parse(localStorage.getItem('alg_history') || '[]');
         history = history.filter(x => x.id !== id);
         history.unshift(current);
-        localStorage.setItem('alg_h', JSON.stringify(history.slice(0, 10)));
-        updateSideRails();
+        localStorage.setItem('alg_history', JSON.stringify(history.slice(0, 10)));
+        document.getElementById('player-view').style.display = 'block';
+        loadPlayer();
     }
 
     function loadPlayer() {
         const srv = SOURCES[document.getElementById('server-select').value];
-        const sh = (current.type === 'tv') ? `/${current.s}/${current.e}` : '';
-        
-        let url = srv.url.replace(/{t}/g, current.type).replace(/{id}/g, current.id)
-            .replace('{sh}', sh)
-            .replace('{sh_v}', `${current.s}-${current.e}`)
+        const sh = (current.t === 'tv') ? `/${current.s}/${current.e}` : '';
+        const sh_ve = (current.t === 'tv') ? `/${current.s}/${current.e}` : '';
+        let url = srv.url.replace(/{t}/g, current.t).replace(/{id}/g, current.id)
+            .replace('{sh}', sh).replace('{sh_v}', `${current.s}-${current.e}`)
+            .replace('{sh_ve}', sh_ve)
             .replace('{sh_me}', `&sea=${current.s}&epi=${current.e}`)
-            .replace('{sh_ma}', (current.type === 'tv' ? `-${current.s}-${current.e}` : ''))
+            .replace('{sh_ma}', (current.t === 'tv' ? `-${current.s}-${current.e}` : ''))
             .replace('{sh_mu}', `&s=${current.s}&e=${current.e}`)
             .replace('{sh_rs}', `&season=${current.s}&episode=${current.e}`)
             .replace('{sh_ue}', `&season=${current.s}&episode=${current.e}`)
-            .replace('{t_2}', (current.type === 'tv' ? 'tv' : ''))
-            .replace('{sh_2}', (current.type === 'tv' ? `&s=${current.s}&e=${current.e}` : ''))
+            .replace('{t_2}', (current.t === 'tv' ? 'tv' : '')).replace('{sh_2}', (current.t === 'tv' ? `&s=${current.s}&e=${current.e}` : ''))
             .replace(/{s}/g, current.s).replace(/{e}/g, current.e);
-
         document.getElementById('player-frame').src = url;
     }
 
-    function updateSideRails() {
-        if(history.length) { document.getElementById('hist-box').style.display = 'block'; renderGrid(history, 'history-rail', true); }
-        if(watchlist.length) { document.getElementById('watch-box').style.display = 'block'; renderGrid(watchlist, 'watchlist-rail', true); }
-    }
-
-    function closeDetails() { document.getElementById('details-overlay').style.display = 'none'; }
-    function closePlayer() { document.getElementById('player-view').style.display = 'none'; document.getElementById('player-frame').src = ''; }
-
-    document.getElementById('search').onkeypress = async (e) => {
-        if(e.key === 'Enter') {
-            document.getElementById('view-browse').style.display = 'none';
-            document.getElementById('view-search').style.display = 'block';
-            const d = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${KEY}&query=${e.target.value}`).then(r => r.json());
-            renderGrid(d.results, 'search-grid', true);
+    function updateHistory() {
+        const hist = JSON.parse(localStorage.getItem('alg_history') || '[]');
+        if(hist.length > 0) {
+            document.getElementById('history-section').style.display = 'block';
+            renderGrid(hist, 'history-grid');
         }
     }
 
+    function closeDetails() { document.getElementById('details-overlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
+    function closePlayer() { document.getElementById('player-view').style.display = 'none'; document.getElementById('player-frame').src = ''; updateHistory(); }
+
+    document.getElementById('search-box').onkeypress = async (e) => {
+        if(e.key === 'Enter') {
+            const query = e.target.value;
+            if(!query) return;
+            const d = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${KEY}&query=${query}`).then(r => r.json());
+            document.getElementById('grid-header').innerText = `Results for: ${query}`;
+            renderGrid(d.results, 'main-grid');
+        }
+    }
     init();
 </script>
 </body>
