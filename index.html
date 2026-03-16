@@ -199,6 +199,15 @@
         mode = m;
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById(`nav-${m}`).classList.add('active');
+        
+        // Fix: Update the header text when changing categories
+        const header = document.getElementById('grid-header');
+        if(m === 'home') header.innerText = "Trending Now";
+        if(m === 'movie') header.innerText = "Popular Movies";
+        if(m === 'tv') header.innerText = "Popular TV Shows";
+        if(m === 'anime') header.innerText = "Top Anime";
+        
+        document.getElementById('search-box').value = ''; // Clear search box on nav
         loadPage();
     }
 
@@ -325,6 +334,8 @@
             const d = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${KEY}&query=${query}`).then(r => r.json());
             document.getElementById('grid-header').innerText = `Results for: ${query}`;
             renderGrid(d.results, 'main-grid');
+            // Remove active class from nav items when searching
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         }
     }
     init();
