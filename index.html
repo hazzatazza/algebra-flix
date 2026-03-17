@@ -200,14 +200,13 @@
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById(`nav-${m}`).classList.add('active');
         
-        // Fix: Update the header text when changing categories
         const header = document.getElementById('grid-header');
         if(m === 'home') header.innerText = "Trending Now";
         if(m === 'movie') header.innerText = "Popular Movies";
         if(m === 'tv') header.innerText = "Popular TV Shows";
         if(m === 'anime') header.innerText = "Top Anime";
         
-        document.getElementById('search-box').value = ''; // Clear search box on nav
+        document.getElementById('search-box').value = '';
         loadPage();
     }
 
@@ -226,13 +225,16 @@
             if(!item.poster_path) return;
             const c = document.createElement('div'); c.className = 'card';
             c.style.backgroundImage = `url(https://image.tmdb.org/t/p/w500${item.poster_path})`;
-            c.onclick = () => openDetails(item);
+            
+            // Fix: History items already have 't' (type) defined, grid items might not.
+            const type = item.t || (item.name || item.first_air_date || item.media_type === 'tv' ? 'tv' : 'movie');
+            c.onclick = () => openDetails({...item, type});
             t.appendChild(c);
         });
     }
 
     async function openDetails(item) {
-        const type = (item.name || item.first_air_date || item.media_type === 'tv') ? 'tv' : 'movie';
+        const type = item.type || (item.name || item.first_air_date || item.media_type === 'tv' ? 'tv' : 'movie');
         const data = await fetch(`https://api.themoviedb.org/3/${type}/${item.id}?api_key=${KEY}`).then(r => r.json());
         
         document.getElementById('details-overlay').style.display = 'block';
@@ -290,7 +292,7 @@
     }
 
     function startPlayer(t, id, s=1, e=1, title, poster) {
-        current = { t, id, s, e, title, poster };
+        current = { t, id, s, e, title, poster_path: poster };
         let history = JSON.parse(localStorage.getItem('alg_history') || '[]');
         history = history.filter(x => x.id !== id);
         history.unshift(current);
@@ -318,9 +320,12 @@
 
     function updateHistory() {
         const hist = JSON.parse(localStorage.getItem('alg_history') || '[]');
+        const section = document.getElementById('history-section');
         if(hist.length > 0) {
-            document.getElementById('history-section').style.display = 'block';
+            section.style.display = 'block';
             renderGrid(hist, 'history-grid');
+        } else {
+            section.style.display = 'none';
         }
     }
 
@@ -334,7 +339,6 @@
             const d = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${KEY}&query=${query}`).then(r => r.json());
             document.getElementById('grid-header').innerText = `Results for: ${query}`;
             renderGrid(d.results, 'main-grid');
-            // Remove active class from nav items when searching
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         }
     }
